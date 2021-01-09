@@ -90,7 +90,7 @@
   "devDependencies": {
     "@babel/parser": "7.12.11",
     "@rollup/plugin-node-resolve": "11.0.1",
-    "@testing-library/react": "9.4.1",
+    "@testing-library/react": "11.2.3",
     "@types/fast-json-stable-stringify": "2.0.0",
     "@types/fetch-mock": "^7.3.2",
     "@types/glob": "7.1.3",
