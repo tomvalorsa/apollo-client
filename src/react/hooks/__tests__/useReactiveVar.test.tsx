@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { render, wait, act } from "@testing-library/react";
 
 import { itAsync } from "../../../testing";
@@ -13,25 +13,12 @@ describe("useReactiveVar Hook", () => {
     function Component() {
       const count = useReactiveVar(counterVar);
 
-      switch (++renderCount) {
-        case 1:
-          expect(count).toBe(0);
-          act(() => {
-            counterVar(count + 1);
-          });
-          break;
-        case 2:
-          expect(count).toBe(1);
-          act(() => {
-            counterVar(counterVar() + 2);
-          });
-          break;
-        case 3:
-          expect(count).toBe(3);
-          break;
-        default:
-          reject(`too many (${renderCount}) renders`);
-      }
+      useEffect(() => {
+        if (count < 3) {
+          expect(count).toBe(renderCount++);
+          counterVar(count + 1);
+        }
+      }, [count]);
 
       return null;
     }
@@ -129,20 +116,13 @@ describe("useReactiveVar Hook", () => {
     function Component() {
       const count = useReactiveVar(counterVar);
 
-      switch (++renderCount) {
-        case 1:
-          expect(count).toBe(0);
-          act(() => {
-            counterVar(count + 1);
-          });
-          break;
-        case 2:
-          expect(count).toBe(1);
-          act(() => {
-            counterVar(counterVar() + 2);
-          });
-          break;
-        case 3:
+      useEffect(() => {
+        if (count < 3) {
+          expect(count).toBe(renderCount++);
+          counterVar(count + 1);
+        }
+
+        if (count === 3) {
           expect(count).toBe(3);
           setTimeout(() => {
             unmount();
@@ -151,10 +131,8 @@ describe("useReactiveVar Hook", () => {
               attemptedUpdateAfterUnmount = true;
             }, 10);
           }, 10);
-          break;
-        default:
-          reject(`too many (${renderCount}) renders`);
-      }
+        }
+      }, [count]);
 
       return null;
     }
